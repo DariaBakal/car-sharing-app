@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: DariaBakal
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: manager@example.com
+              - column:
+                  name: first_name
+                  value: Manager
+              - column:
+                  name: last_name
+                  value: User
+              - column:
+                  name: password
+                  value: $2a$10$wT2HlJ6sM2XwT2HlJ6sM2XwT2HlJ6sM2XwT2HlJ6sM2XwT2HlJ6sM2XwT2HlJ6sM2X
+              - column:
+                  name: role
+                  value: MANAGER
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: customer@example.com
+              - column:
+                  name: first_name
+                  value: Customer
+              - column:
+                  name: last_name
+                  value: User
+              - column:
+                  name: password
+                  value: $2a$10$wT2HlJ6sM2XwT2HlJ6sM2XwT2HlJ6sM2XwT2HlJ6sM2XwT2HlJ6sM2XwT2HlJ6sM2X
+              - column:
+                  name: role
+                  value: CUSTOMER
