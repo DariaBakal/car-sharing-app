@@ -1,4 +1,4 @@
-package com.example.carsharingapp.dto;
+package com.example.carsharingapp.dto.user;
 
 import com.example.carsharingapp.validation.Password;
 import jakarta.validation.constraints.NotBlank;
