@@ -1,6 +1,5 @@
-package com.example.carsharingapp.dto;
+package com.example.carsharingapp.dto.user;
 
-import com.example.carsharingapp.validation.Password;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -8,6 +7,5 @@ import lombok.Data;
 public class UserLoginRequestDto {
     @NotBlank
     private String email;
-    @Password
     private String password;
 }
