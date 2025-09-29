@@ -1,9 +1,9 @@
 package com.example.carsharingapp.controller;
 
-import com.example.carsharingapp.dto.UserLoginRequestDto;
-import com.example.carsharingapp.dto.UserLoginResponseDto;
-import com.example.carsharingapp.dto.UserRegistrationRequestDto;
-import com.example.carsharingapp.dto.UserRegistrationResponseDto;
+import com.example.carsharingapp.dto.user.UserLoginRequestDto;
+import com.example.carsharingapp.dto.user.UserLoginResponseDto;
+import com.example.carsharingapp.dto.user.UserRegistrationRequestDto;
+import com.example.carsharingapp.dto.user.UserRegistrationResponseDto;
 import com.example.carsharingapp.exception.RegistrationException;
 import com.example.carsharingapp.security.AuthenticationService;
 import com.example.carsharingapp.service.UserService;

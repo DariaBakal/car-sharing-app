@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +22,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String TOKEN_HEADER = "Bearer ";
+
+    private static final List<String> PUBLIC_PATHS = Arrays.asList(
+            "/auth",
+            "/error",
+            "/swagger-ui",
+            "/v3/api-docs"
+    );
+
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
@@ -29,8 +39,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        String token = getToken(request);
+        String path = request.getServletPath();
 
+        if (isPublicPath(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = getToken(request);
         if (token != null && jwtUtil.isValidToken(token)) {
             String username = jwtUtil.getUsername(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -48,5 +64,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(TOKEN_HEADER.length());
         }
         return null;
+    }
+
+    private boolean isPublicPath(String path) {
+        return PUBLIC_PATHS.stream().anyMatch(path::startsWith);
     }
 }
