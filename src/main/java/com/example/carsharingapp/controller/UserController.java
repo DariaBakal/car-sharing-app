@@ -4,7 +4,7 @@ import com.example.carsharingapp.dto.user.UpdateUserProfileRequestDto;
 import com.example.carsharingapp.dto.user.UpdateUserRoleRequestDto;
 import com.example.carsharingapp.dto.user.UserDto;
 import com.example.carsharingapp.model.User;
-import com.example.carsharingapp.service.UserService;
+import com.example.carsharingapp.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
