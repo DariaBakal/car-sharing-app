@@ -4,6 +4,7 @@ import com.example.carsharingapp.dto.car.AddCarRequestDto;
 import com.example.carsharingapp.dto.car.CarDto;
 import com.example.carsharingapp.dto.car.UpdateCarRequestDto;
 import com.example.carsharingapp.exception.EntityNotFoundException;
+import com.example.carsharingapp.exception.RentalException;
 import com.example.carsharingapp.mapper.CarMapper;
 import com.example.carsharingapp.model.Car;
 import com.example.carsharingapp.repository.CarRepository;
@@ -51,5 +52,18 @@ public class CarServiceImpl implements CarService {
     @Override
     public void delete(Long id) {
         carRepository.deleteById(id);
+    }
+
+    @Override
+    public void updateInventory(Long carId, int delta) {
+        Car car = carRepository.findById(carId).orElseThrow(
+                () -> new EntityNotFoundException("Can't find car with id: " + carId));
+        int newInventory = car.getInventory() + delta;
+        if (newInventory < 0) {
+            throw new RentalException(
+                    "Cannot proceed. Inventory change would result in negative stock.");
+        }
+        car.setInventory(newInventory);
+        carRepository.save(car);
     }
 }
