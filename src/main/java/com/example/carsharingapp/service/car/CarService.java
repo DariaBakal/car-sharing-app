@@ -16,4 +16,6 @@ public interface CarService {
     CarDto updateCar(Long id, UpdateCarRequestDto requestDto);
 
     void delete(Long id);
+
+    void updateInventory(Long carId, int delta);
 }
