@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 public class TelegramNotificationService implements NotificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramNotificationService.class);
     private static final String TELEGRAM_API_URL =
-            "https://api.telegram.org/bot8307707648:AAGRNC6QgS_zxOyHoBAAQvAcwVf6FlPHcaE/{method}";
+            "https://api.telegram.org/bot${telegram.bot.token}/{method}";
     private final RestTemplate restTemplate;
     @Value("${telegram.bot.token}")
     private String botToken;
