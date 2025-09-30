@@ -10,6 +10,7 @@ import com.example.carsharingapp.model.Rental;
 import com.example.carsharingapp.model.User;
 import com.example.carsharingapp.repository.CarRepository;
 import com.example.carsharingapp.repository.RentalRepository;
+import com.example.carsharingapp.service.NotificationService;
 import com.example.carsharingapp.service.car.CarService;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
@@ -26,22 +27,26 @@ public class RentalServiceImpl implements RentalService {
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
     private final CarService carService;
+    private final NotificationService notificationService;
 
     @Transactional
     @Override
     public RentalDto addRental(AddRentalRequestDto requestDto, Authentication authentication) {
-        Long carId = requestDto.getCarId();
         User user = (User) authentication.getPrincipal();
+
+        Long carId = requestDto.getCarId();
         Car car = carRepository.findById(carId).orElseThrow(
                 () -> new EntityNotFoundException(
                         "Can't find car with id: " + carId));
-
         carService.updateInventory(car.getId(), -1);
+
         Rental rental = rentalMapper.toModel(requestDto);
         rental.setUser(user);
         rental.setCar(car);
         rental.setRentalDate(LocalDate.now());
         rentalRepository.save(rental);
+
+        notificationService.sendMessage(buildRentalCreatedNotificationMessage(rental, car, user));
         return rentalMapper.toDto(rental);
     }
 
@@ -100,6 +105,35 @@ public class RentalServiceImpl implements RentalService {
         rentalRepository.save(rental);
         carService.updateInventory(rental.getCar().getId(), +1);
 
+        notificationService.sendMessage(buildCarReturnedNotificationMessage(rental, rental.getCar(),
+                rental.getUser()));
+
         return rentalMapper.toDto(rental);
+    }
+
+    private String buildRentalCreatedNotificationMessage(Rental rental, Car car, User user) {
+        return String.format(
+                "📢 **New Rental Created!** 🚗\n"
+                        + "👤 User: %s %s (ID: `%d`)\n"
+                        + "⚙️ Car: %s %s (ID: `%d`)\n"
+                        + "🗓️ Rental Date: `%s`\n"
+                        + "🔙 Expected Return: `%s`",
+                user.getFirstName(), user.getLastName(), user.getId(),
+                car.getBrand(), car.getModel(), car.getId(),
+                rental.getRentalDate(), rental.getReturnDate()
+        );
+    }
+
+    private String buildCarReturnedNotificationMessage(Rental rental, Car car, User rentalUser) {
+        return String.format(
+                "✅ **Car Returned Successfully!** 📦\n"
+                        + "⚙️ Car: %s %s (ID: `%d`)\n"
+                        + "👤 Renter: %s %s (ID: `%d`)\n"
+                        + "📅 Actual Return Date: `%s`\n"
+                        + "🔑 Rental ID: `%d`",
+                car.getBrand(), car.getModel(), car.getId(),
+                rentalUser.getFirstName(), rentalUser.getLastName(), rentalUser.getId(),
+                rental.getActualReturnDate(), rental.getId()
+        );
     }
 }
