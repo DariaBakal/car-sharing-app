@@ -33,6 +33,7 @@ public class Rental {
     private LocalDate rentalDate;
     @Column(nullable = false)
     private LocalDate returnDate;
+    private LocalDate actualReturnDate;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
