@@ -17,8 +17,8 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class TelegramNotificationService implements NotificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramNotificationService.class);
-    private static final String TELEGRAM_API_URL =
-            "https://api.telegram.org/bot${telegram.bot.token}/{method}";
+    private static final String TELEGRAM_API_BASE_URL =
+            "https://api.telegram.org/bot%s/{method}";
     private final RestTemplate restTemplate;
     @Value("${telegram.bot.token}")
     private String botToken;
@@ -27,9 +27,8 @@ public class TelegramNotificationService implements NotificationService {
 
     @Override
     public void sendMessage(String message) {
-        String url = TELEGRAM_API_URL.replace("{token}", botToken)
+        String url = String.format(TELEGRAM_API_BASE_URL, botToken)
                 .replace("{method}", "sendMessage");
-
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("chat_id", chatId);
         body.add("text", message);
