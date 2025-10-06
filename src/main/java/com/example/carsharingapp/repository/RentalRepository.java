@@ -2,6 +2,7 @@ package com.example.carsharingapp.repository;
 
 import com.example.carsharingapp.model.Rental;
 import io.micrometer.common.lang.Nullable;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,4 +27,10 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
 
     @EntityGraph(attributePaths = {"user", "car"})
     Optional<Rental> findRentalById(Long id);
+
+    @EntityGraph(attributePaths = {"user", "car"})
+    @Query("SELECT r FROM Rental r "
+            + "WHERE r.returnDate <= CURRENT_DATE "
+            + "AND r.actualReturnDate IS NULL")
+    List<Rental> findOverdueRentals();
 }
