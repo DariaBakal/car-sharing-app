@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: DariaBakal
+      comment: Increase session_url column size in payments table to TEXT to accommodate long URLs from payment providers.
+      changes:
+        - modifyDataType:
+            columnName: session_url
+            newDataType: TEXT
+            tableName: payments
