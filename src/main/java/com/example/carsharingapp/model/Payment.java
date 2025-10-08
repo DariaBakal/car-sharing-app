@@ -12,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.net.URI;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -42,7 +41,7 @@ public class Payment {
     @JoinColumn(name = "rental_id", nullable = false)
     private Rental rental;
     @Column(nullable = false)
-    private URI sessionUrl;
+    private String sessionUrl;
     @Column(nullable = false)
     private String sessionId;
     @Column(nullable = false)
@@ -52,7 +51,8 @@ public class Payment {
 
     public enum Status {
         PENDING,
-        PAID
+        PAID,
+        CANCELLED
     }
 
     public enum Type {

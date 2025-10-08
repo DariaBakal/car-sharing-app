@@ -2,6 +2,7 @@ package com.example.carsharingapp.service.rental;
 
 import com.example.carsharingapp.dto.rental.AddRentalRequestDto;
 import com.example.carsharingapp.dto.rental.RentalDto;
+import com.example.carsharingapp.exception.AuthorityException;
 import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.exception.RentalException;
 import com.example.carsharingapp.mapper.RentalMapper;
@@ -77,7 +78,7 @@ public class RentalServiceImpl implements RentalService {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
 
         if (!isManager && !rental.getUser().getId().equals(principal.getId())) {
-            throw new RentalException(
+            throw new AuthorityException(
                     "Access denied. You are not authorized to view this rental record.");
         }
         return rentalMapper.toDto(rental);
@@ -94,7 +95,7 @@ public class RentalServiceImpl implements RentalService {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
 
         if (!isManager && !rental.getUser().getId().equals(principal.getId())) {
-            throw new RentalException(
+            throw new AuthorityException(
                     "Access denied. You are not authorized to view and change this rental record.");
         }
         if (rental.getActualReturnDate() != null) {
