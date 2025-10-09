@@ -77,4 +77,16 @@ public class PaymentController {
         paymentService.handleCancel(sessionId);
         return "Payment was canceled. You can try again later.";
     }
+
+    @PostMapping("/renew/{paymentId}")
+    @Operation(summary = "Renew payment session",
+            description = "Creates a new Stripe session for an expired/cancelled payment "
+                    + "and redirects the user to the new session URL.")
+    public ResponseEntity<?> renewPaymentSession(@PathVariable Long paymentId,
+            Authentication authentication) {
+        PaymentDto paymentDto = paymentService.renewPaymentSession(paymentId, authentication);
+        return ResponseEntity.status(303)
+                .location(URI.create(paymentDto.getSessionUrl()))
+                .body(paymentDto);
+    }
 }
