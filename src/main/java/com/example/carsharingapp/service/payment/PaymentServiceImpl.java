@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +51,6 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentDto findById(Long id, Authentication authentication) {
         Payment payment = paymentRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find payment with id:" + id));
-        User principal = (User) authentication.getPrincipal();
         validateUserAccessToRental(payment.getRental(), authentication);
         return paymentMapper.toDto(payment);
     }
@@ -89,8 +89,7 @@ public class PaymentServiceImpl implements PaymentService {
                     throw new IllegalStateException(
                             "An active payment session already exists for this rental");
                 } else {
-                    pending.setStatus(Status.CANCELLED);
-                    paymentRepository.save(pending);
+                    cancelPayment(pending);
                 }
             } catch (StripeException e) {
                 cancelPayment(pending);
@@ -108,8 +107,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     private Payment createPaymentFromStripeSession(Rental rental, Type type,
             BigDecimal amountToPay) {
-        String successUrl = baseUrl + "/api/payments/success?session_id={CHECKOUT_SESSION_ID}";
-        String cancelUrl = baseUrl + "/api/payments/cancel?session_id={CHECKOUT_SESSION_ID}";
+        String successUrl = buildUrlWithSessionId("/api/payments/success");
+        String cancelUrl = buildUrlWithSessionId("/api/payments/cancel");
         try {
             Session session = stripeService.createCheckoutSession(
                     amountToPay, successUrl, cancelUrl);
@@ -126,9 +125,9 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
-    private void cancelPayment(Payment payment) {
+    private Payment cancelPayment(Payment payment) {
         payment.setStatus(Status.CANCELLED);
-        paymentRepository.save(payment);
+        return paymentRepository.save(payment);
     }
 
     @Override
@@ -184,11 +183,45 @@ public class PaymentServiceImpl implements PaymentService {
                     "Cannot cancel payment that has already been paid");
         }
 
-        if (payment.getStatus() == Status.PENDING) {
-            cancelPayment(payment);
+        if (payment.getStatus() == Status.CANCELLED) {
+            return paymentMapper.toDto(payment);
         }
 
+        Payment cancelledPayment = cancelPayment(payment);
+        return paymentMapper.toDto(cancelledPayment);
+    }
+
+    @Override
+    public PaymentDto renewPaymentSession(Long paymentId, Authentication authentication) {
+        Payment payment = paymentRepository.findById(paymentId).orElseThrow(
+                () -> new EntityNotFoundException("Can't find payment with id:" + paymentId));
+        validateUserAccessToRental(payment.getRental(), authentication);
+        if (payment.getStatus() == Status.PAID) {
+            throw new IllegalStateException("Can't renew session for paid payment");
+        }
+        if (payment.getStatus() == Status.PENDING) {
+            throw new IllegalStateException("There is nothing to renew. Session is still active");
+        }
+        String successUrl = buildUrlWithSessionId("/api/payments/success");
+        String cancelUrl = buildUrlWithSessionId("/api/payments/cancel");
+        try {
+            Session session = stripeService.createCheckoutSession(
+                    payment.getAmountToPay(), successUrl, cancelUrl);
+            payment.setStatus(Status.PENDING);
+            payment.setSessionUrl(session.getUrl());
+            payment.setSessionId(session.getId());
+            paymentRepository.save(payment);
+        } catch (StripeException e) {
+            throw new RuntimeException("Failed to create Stripe session: " + e.getMessage(), e);
+        }
         return paymentMapper.toDto(payment);
+    }
+
+    private String buildUrlWithSessionId(String path) {
+        return UriComponentsBuilder.fromUriString(baseUrl)
+                .path(path)
+                .queryParam("session_id", "{CHECKOUT_SESSION_ID}")
+                .toUriString();
     }
 
     private BigDecimal calculatePaymentAmount(Rental rental, Payment.Type type) {

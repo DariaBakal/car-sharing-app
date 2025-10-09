@@ -2,6 +2,7 @@ package com.example.carsharingapp.repository;
 
 import com.example.carsharingapp.model.Payment;
 import com.example.carsharingapp.model.Payment.Status;
+import com.example.carsharingapp.model.Payment.Type;
 import io.micrometer.common.lang.Nullable;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     Optional<Payment> findByRentalIdAndTypeAndStatus(
             Long rentalId,
-            Payment.Type type,
-            Payment.Status status);
+            Type type,
+            Status status);
+
+    List<Payment> findAllByStatus(Status status);
 }
