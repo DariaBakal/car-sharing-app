@@ -52,7 +52,8 @@ public class Payment {
     public enum Status {
         PENDING,
         PAID,
-        CANCELLED
+        CANCELLED,
+        EXPIRED
     }
 
     public enum Type {

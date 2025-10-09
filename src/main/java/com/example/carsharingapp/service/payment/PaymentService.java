@@ -19,4 +19,6 @@ public interface PaymentService {
     PaymentDto handleSuccess(String sessionId);
 
     PaymentDto handleCancel(String sessionId);
+
+    PaymentDto renewPaymentSession(Long paymentId, Authentication authentication);
 }
