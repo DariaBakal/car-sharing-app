@@ -23,6 +23,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             """)
     Page<Payment> findAllByUserId(@Nullable Long userId, Pageable pageable);
 
+    boolean existsByRentalUserIdAndStatus(Long userId, Status status);
+
     Optional<Payment> findBySessionId(String sessionId);
 
     boolean existsByRentalIdAndTypeAndStatusIn(
