@@ -1,5 +1,6 @@
 package com.example.carsharingapp.service.rental;
 
+import com.example.carsharingapp.dto.payment.CreatePaymentSessionRequestDto;
 import com.example.carsharingapp.dto.rental.AddRentalRequestDto;
 import com.example.carsharingapp.dto.rental.RentalDto;
 import com.example.carsharingapp.exception.AuthorityException;
@@ -7,12 +8,16 @@ import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.exception.RentalException;
 import com.example.carsharingapp.mapper.RentalMapper;
 import com.example.carsharingapp.model.Car;
+import com.example.carsharingapp.model.Payment.Status;
+import com.example.carsharingapp.model.Payment.Type;
 import com.example.carsharingapp.model.Rental;
 import com.example.carsharingapp.model.User;
 import com.example.carsharingapp.repository.CarRepository;
+import com.example.carsharingapp.repository.PaymentRepository;
 import com.example.carsharingapp.repository.RentalRepository;
 import com.example.carsharingapp.service.NotificationService;
 import com.example.carsharingapp.service.car.CarService;
+import com.example.carsharingapp.service.payment.PaymentService;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,12 +34,19 @@ public class RentalServiceImpl implements RentalService {
     private final CarRepository carRepository;
     private final CarService carService;
     private final NotificationService notificationService;
+    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
 
     @Transactional
     @Override
     public RentalDto addRental(AddRentalRequestDto requestDto, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-
+        boolean doesUserHavePendingPayment = paymentRepository
+                .existsByRentalUserIdAndStatus(user.getId(), Status.PENDING);
+        if (doesUserHavePendingPayment) {
+            throw new RentalException("Cannot proceed with a new rental. Please settle your "
+                    + "existing **PENDING payment** first.");
+        }
         Long carId = requestDto.getCarId();
         Car car = carRepository.findById(carId).orElseThrow(
                 () -> new EntityNotFoundException(
@@ -104,11 +116,18 @@ public class RentalServiceImpl implements RentalService {
         }
         rental.setActualReturnDate(LocalDate.now());
         rentalRepository.save(rental);
-        carService.updateInventory(rental.getCar().getId(), +1);
+        if (rental.getActualReturnDate().isAfter(rental.getReturnDate())) {
+            CreatePaymentSessionRequestDto fineRequest = new CreatePaymentSessionRequestDto();
+            fineRequest.setRentalId(rental.getId());
+            fineRequest.setType(Type.FINE);
+            paymentService.checkout(fineRequest, authentication);
+            notificationService.sendMessage(
+                    buildFinePaymentCreatedMessage(rental, rental.getUser()));
+        }
 
+        carService.updateInventory(rental.getCar().getId(), +1);
         notificationService.sendMessage(buildCarReturnedNotificationMessage(rental, rental.getCar(),
                 rental.getUser()));
-
         return rentalMapper.toDto(rental);
     }
 
@@ -135,6 +154,20 @@ public class RentalServiceImpl implements RentalService {
                 car.getBrand(), car.getModel(), car.getId(),
                 rentalUser.getFirstName(), rentalUser.getLastName(), rentalUser.getId(),
                 rental.getActualReturnDate(), rental.getId()
+        );
+    }
+
+    private String buildFinePaymentCreatedMessage(Rental rental, User user) {
+        return String.format(
+                "💰 **Fine Issued!** ⚠️\n"
+                        + "👤 User: %s %s (ID: `%d`)\n"
+                        + "🔑 Rental ID: `%d`\n"
+                        + "🗓️ Expected Return: `%s`\n"
+                        + "❗ Car was returned late! A **FINE** payment session has been created. "
+                        + "Staff should follow up if payment is not completed.",
+                user.getFirstName(), user.getLastName(), user.getId(),
+                rental.getId(),
+                rental.getReturnDate()
         );
     }
 }
