@@ -16,8 +16,6 @@ import com.example.carsharingapp.dto.car.CarDto;
 import com.example.carsharingapp.dto.car.UpdateCarRequestDto;
 import com.example.carsharingapp.model.Car;
 import com.example.carsharingapp.repository.CarRepository;
-import com.example.carsharingapp.repository.RentalRepository;
-import com.example.carsharingapp.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.Optional;
