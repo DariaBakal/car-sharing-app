@@ -32,8 +32,8 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         user.setRole(Role.CUSTOMER);
-        userRepository.save(user);
-        return userMapper.toRegistrationResponseDto(user);
+        User savedUser = userRepository.save(user);
+        return userMapper.toRegistrationResponseDto(savedUser);
     }
 
     @Override

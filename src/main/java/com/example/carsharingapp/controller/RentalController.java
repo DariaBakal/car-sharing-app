@@ -2,6 +2,7 @@ package com.example.carsharingapp.controller;
 
 import com.example.carsharingapp.dto.rental.AddRentalRequestDto;
 import com.example.carsharingapp.dto.rental.RentalDto;
+import com.example.carsharingapp.dto.rental.RentalReturnDto;
 import com.example.carsharingapp.service.rental.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,7 +63,7 @@ public class RentalController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Set return date",
             description = "Set actual return date (increase car inventory by 1)")
-    public RentalDto setReturnDate(@PathVariable Long id, Authentication authentication) {
+    public RentalReturnDto setReturnDate(@PathVariable Long id, Authentication authentication) {
         return rentalService.setReturnDate(id, authentication);
     }
 }
