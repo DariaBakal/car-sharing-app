@@ -45,8 +45,8 @@ public class CarServiceImpl implements CarService {
         Car car = carRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find car with id: " + id));
         carMapper.updateCarFromDto(requestDto, car);
-        carRepository.save(car);
-        return carMapper.toDto(car);
+        Car savedCar = carRepository.save(car);
+        return carMapper.toDto(savedCar);
     }
 
     @Override
