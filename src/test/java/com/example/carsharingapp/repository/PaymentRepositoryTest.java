@@ -91,11 +91,12 @@ public class PaymentRepositoryTest {
 
         rental1 = createRental(user1, car1);
         Rental rental2 = createRental(user1, car1);
-        Rental rental3 = createRental(user2, car1);
 
         createPayment(rental1, Status.PAID, Type.PAYMENT, "session_1");
         createPayment(rental1, Status.PENDING, Type.FINE, "session_2");
         createPayment(rental2, Status.CANCELLED, Type.PAYMENT, "session_3");
+
+        Rental rental3 = createRental(user2, car1);
 
         createPayment(rental3, Status.PENDING, Type.PAYMENT, "session_4");
         createPayment(rental3, Status.PAID, Type.FINE, "session_5");
