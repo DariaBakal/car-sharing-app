@@ -286,5 +286,4 @@ public class PaymentServiceImpl implements PaymentService {
                 rental.getId()
         );
     }
-
 }

@@ -8,10 +8,12 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class RentalDto {
+public class RentalReturnDto {
     private Long id;
     private LocalDate rentalDate;
     private LocalDate returnDate;
+    private LocalDate actualReturnDate;
     private CarDto car;
     private UserInfoDto user;
 }
+
