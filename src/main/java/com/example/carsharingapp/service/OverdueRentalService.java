@@ -16,7 +16,7 @@ public class OverdueRentalService {
     private final RentalRepository rentalRepository;
     private final NotificationService notificationService;
 
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "${rental.overdue.check.cron}")
     public void checkOverdueRentals() {
         List<Rental> overdueRentals = rentalRepository.findOverdueRentals();
 
