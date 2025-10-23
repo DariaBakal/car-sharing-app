@@ -3,6 +3,7 @@ package com.example.carsharingapp.mapper;
 import com.example.carsharingapp.config.MapperConfig;
 import com.example.carsharingapp.dto.rental.AddRentalRequestDto;
 import com.example.carsharingapp.dto.rental.RentalDto;
+import com.example.carsharingapp.dto.rental.RentalReturnDto;
 import com.example.carsharingapp.model.Rental;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,6 +11,8 @@ import org.mapstruct.Mapping;
 @Mapper(config = MapperConfig.class)
 public interface RentalMapper {
     RentalDto toDto(Rental rental);
+
+    RentalReturnDto toReturnDto(Rental rental);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)

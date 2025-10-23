@@ -1,0 +1,19 @@
+package com.example.carsharingapp.annotation;
+
+import com.example.carsharingapp.factory.WithMockCustomUserSecurityContextFactory;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.springframework.security.test.context.support.WithSecurityContext;
+
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
+public @interface WithMockCustomUser {
+    long id() default 1L;
+
+    String email() default "customer@test.com";
+
+    String role() default "CUSTOMER";
+}

@@ -3,6 +3,7 @@ package com.example.carsharingapp.service.rental;
 import com.example.carsharingapp.dto.payment.CreatePaymentSessionRequestDto;
 import com.example.carsharingapp.dto.rental.AddRentalRequestDto;
 import com.example.carsharingapp.dto.rental.RentalDto;
+import com.example.carsharingapp.dto.rental.RentalReturnDto;
 import com.example.carsharingapp.exception.AuthorityException;
 import com.example.carsharingapp.exception.EntityNotFoundException;
 import com.example.carsharingapp.exception.RentalException;
@@ -98,7 +99,7 @@ public class RentalServiceImpl implements RentalService {
 
     @Transactional
     @Override
-    public RentalDto setReturnDate(Long id, Authentication authentication) {
+    public RentalReturnDto setReturnDate(Long id, Authentication authentication) {
         Rental rental = rentalRepository.findRentalById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find rental with id: " + id));
 
@@ -128,7 +129,7 @@ public class RentalServiceImpl implements RentalService {
         carService.updateInventory(rental.getCar().getId(), +1);
         notificationService.sendMessage(buildCarReturnedNotificationMessage(rental, rental.getCar(),
                 rental.getUser()));
-        return rentalMapper.toDto(rental);
+        return rentalMapper.toReturnDto(rental);
     }
 
     private String buildRentalCreatedNotificationMessage(Rental rental, Car car, User user) {
