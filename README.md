@@ -5,25 +5,6 @@ It replaces the outdated manual record-keeping system with a robust, web-based p
 
 ---
 
-## 📋 Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Technologies Used](#technologies-used)
-- [System Requirements](#system-requirements)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Running the Application](#running-the-application)
-- [API Endpoints](#api-endpoints)
-- [Database Management](#database-management)
-- [Testing & CI/CD](#testing--cicd)
-- [Docker Setup](#docker-setup)
-- [Notifications](#notifications)
-- [Troubleshooting](#troubleshooting)
-- [Contributors](#contributors)
-
----
-
 ## 🧩 Overview
 
 The **Car Sharing App** streamlines car rental operations by allowing users to register, rent cars, make payments via **Stripe**, and receive notifications via **Telegram**.  
