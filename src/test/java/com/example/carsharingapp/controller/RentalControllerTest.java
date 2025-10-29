@@ -78,8 +78,8 @@ public class RentalControllerTest {
     }
 
     @Test
-    @DisplayName("Verify addRental when Unauthenticated user returns 401 Unauthorized")
-    void addRental_WithoutAuthentication_ShouldReturn401Unauthorized() throws Exception {
+    @DisplayName("Verify addRental when Unauthenticated user returns 403 Forbidden")
+    void addRental_WithoutAuthentication_ShouldReturn403() throws Exception {
         AddRentalRequestDto requestDto = createValidAddRentalRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
@@ -87,7 +87,7 @@ public class RentalControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -125,13 +125,13 @@ public class RentalControllerTest {
     }
 
     @Test
-    @DisplayName("Verify getAllRentals when Anonymous user returns 401 Unauthorized")
+    @DisplayName("Verify getAllRentals when Anonymous user returns 403 Forbidden")
     @WithAnonymousUser
-    void getAllRentals_WithAnonymousUser_ShouldReturn401Unauthorized() throws Exception {
+    void getAllRentals_WithAnonymousUser_ShouldReturn403() throws Exception {
         mockMvc.perform(get(RENTAL_ENDPOINT)
                         .param("isActive", "true")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -186,11 +186,11 @@ public class RentalControllerTest {
     }
 
     @Test
-    @DisplayName("Verify setReturnDate when Unauthenticated user returns 401 Unauthorized")
+    @DisplayName("Verify setReturnDate when Unauthenticated user returns 403 Forbidden")
     @WithAnonymousUser
-    void setReturnDate_WithoutAuthentication_ShouldReturn401Unauthorized() throws Exception {
+    void setReturnDate_WithoutAuthentication_ShouldReturn403() throws Exception {
         mockMvc.perform(post(RENTAL_ENDPOINT + "/{id}/return", CUSTOMER_RENTAL_ID)
                         .with(csrf()))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }

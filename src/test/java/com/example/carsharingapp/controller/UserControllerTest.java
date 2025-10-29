@@ -120,9 +120,9 @@ public class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Verify updateUserRole when Anonymous user returns 401 Unauthorized")
+    @DisplayName("Verify updateUserRole when Anonymous user returns 403 Forbidden")
     @WithAnonymousUser
-    void updateUserRole_AnonymousUser_ShouldReturn401Unauthorized() throws Exception {
+    void updateUserRole_AnonymousUser_ShouldReturn403() throws Exception {
         UpdateUserRoleRequestDto requestDto = new UpdateUserRoleRequestDto()
                 .setRole(User.Role.MANAGER);
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
@@ -131,7 +131,7 @@ public class UserControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -178,12 +178,12 @@ public class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Verify getMyProfileInfo when Anonymous user returns 401 Unauthorized")
+    @DisplayName("Verify getMyProfileInfo when Anonymous user returns 403 Forbidden")
     @WithAnonymousUser
-    void getMyProfileInfo_AnonymousUser_ShouldReturn401Unauthorized() throws Exception {
+    void getMyProfileInfo_AnonymousUser_ShouldReturn403() throws Exception {
         mockMvc.perform(get(USER_ENDPOINT + "/me")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -246,9 +246,9 @@ public class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Verify updateUserProfile when Anonymous user returns 401 Unauthorized")
+    @DisplayName("Verify updateUserProfile when Anonymous user returns 403 Forbidden")
     @WithAnonymousUser
-    void updateUserProfile_AnonymousUser_ShouldReturn401Unauthorized() throws Exception {
+    void updateUserProfile_AnonymousUser_ShouldReturn403() throws Exception {
         UpdateUserProfileRequestDto requestDto = new UpdateUserProfileRequestDto()
                 .setFirstName("Unauthorized")
                 .setLastName("Update");
@@ -258,6 +258,6 @@ public class UserControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }

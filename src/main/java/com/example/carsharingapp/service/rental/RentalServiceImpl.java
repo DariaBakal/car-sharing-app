@@ -77,7 +77,7 @@ public class RentalServiceImpl implements RentalService {
         } else {
             actualUserIdFilter = currentUserId;
         }
-        return rentalRepository.findAllByUserIdAndActualReturnDateStatus(
+        return rentalRepository.findAllByUserIdAndIsActive(
                         actualUserIdFilter, isActive, pageable)
                 .map(rentalMapper::toDto);
     }

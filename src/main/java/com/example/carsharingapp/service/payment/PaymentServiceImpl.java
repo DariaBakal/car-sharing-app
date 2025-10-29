@@ -46,7 +46,10 @@ public class PaymentServiceImpl implements PaymentService {
         User principal = (User) authentication.getPrincipal();
         Long currentUserId = principal.getId();
         Long actualUserIdFilter = isManager(authentication) ? userId : currentUserId;
-        return paymentRepository.findAllByUserId(actualUserIdFilter, pageable)
+
+        return (actualUserIdFilter == null
+                ? paymentRepository.findAll(pageable)
+                : paymentRepository.findAllByRentalUserId(actualUserIdFilter, pageable))
                 .map(paymentMapper::toDto);
     }
 

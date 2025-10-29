@@ -106,18 +106,9 @@ public class PaymentRepositoryTest {
     }
 
     @Test
-    @DisplayName("findAllByUserId should return all payments when userId is null")
-    void findAllByUserId_NullUserId_ShouldReturnAllPayments() {
-        Page<Payment> result = paymentRepository.findAllByUserId(null, pageable);
-
-        assertEquals(5, result.getTotalElements(),
-                "Should return all 5 payments when userId is null");
-    }
-
-    @Test
     @DisplayName("findAllByUserId should return only user1's payments")
     void findAllByUserId_User1_ShouldReturnThreePayments() {
-        Page<Payment> result = paymentRepository.findAllByUserId(user1.getId(), pageable);
+        Page<Payment> result = paymentRepository.findAllByRentalUserId(user1.getId(), pageable);
 
         assertEquals(3, result.getTotalElements(),
                 "User1 should have 3 payments");
@@ -129,7 +120,7 @@ public class PaymentRepositoryTest {
     @Test
     @DisplayName("findAllByUserId should return only user2's payments")
     void findAllByUserId_User2_ShouldReturnTwoPayments() {
-        Page<Payment> result = paymentRepository.findAllByUserId(user2.getId(), pageable);
+        Page<Payment> result = paymentRepository.findAllByRentalUserId(user2.getId(), pageable);
 
         assertEquals(2, result.getTotalElements(),
                 "User2 should have 2 payments");
@@ -143,7 +134,7 @@ public class PaymentRepositoryTest {
     void findAllByUserId_ShouldEagerLoadRelations() {
         entityManager.clear();
 
-        Page<Payment> result = paymentRepository.findAllByUserId(user1.getId(), pageable);
+        Page<Payment> result = paymentRepository.findAllByRentalUserId(user1.getId(), pageable);
 
         assertFalse(result.isEmpty(), "Should have payments");
         Payment payment = result.getContent().get(0);
@@ -155,7 +146,7 @@ public class PaymentRepositoryTest {
     @Test
     @DisplayName("findAllByUserId should return empty page for non-existing user")
     void findAllByUserId_NonExistingUser_ShouldReturnEmptyPage() {
-        Page<Payment> result = paymentRepository.findAllByUserId(999L, pageable);
+        Page<Payment> result = paymentRepository.findAllByRentalUserId(999L, pageable);
 
         assertEquals(0, result.getTotalElements(),
                 "Should return empty page for non-existing user");
@@ -163,13 +154,13 @@ public class PaymentRepositoryTest {
     }
 
     @Test
-    @DisplayName("findAllByUserId should respect pagination")
-    void findAllByUserId_ShouldRespectPagination() {
+    @DisplayName("findAll should respect pagination")
+    void findAll_ShouldRespectPagination() {
         Pageable firstPage = PageRequest.of(0, 2);
         Pageable secondPage = PageRequest.of(1, 2);
 
-        Page<Payment> page1 = paymentRepository.findAllByUserId(null, firstPage);
-        Page<Payment> page2 = paymentRepository.findAllByUserId(null, secondPage);
+        Page<Payment> page1 = paymentRepository.findAll(firstPage);
+        Page<Payment> page2 = paymentRepository.findAll(secondPage);
 
         assertEquals(2, page1.getContent().size(),
                 "First page should have 2 payments");

@@ -96,7 +96,7 @@ public class RentalRepositoryTest {
             when both userId and isActive status filters are null.
             """)
     void findAllByUserIdAndActualReturnDateStatus_AllFiltersNull_ReturnsAllRentals() {
-        Page<Rental> result = rentalRepository.findAllByUserIdAndActualReturnDateStatus(
+        Page<Rental> result = rentalRepository.findAllByUserIdAndIsActive(
                 null,
                 null,
                 pageable
@@ -112,7 +112,7 @@ public class RentalRepositoryTest {
             when isActive is true and userId is null. (Expected 4)
             """)
     void findAllByUserIdAndActualReturnDateStatus_ActiveOnly_ReturnsFourRentals() {
-        Page<Rental> result = rentalRepository.findAllByUserIdAndActualReturnDateStatus(
+        Page<Rental> result = rentalRepository.findAllByUserIdAndIsActive(
                 null,
                 true,
                 pageable
@@ -129,7 +129,7 @@ public class RentalRepositoryTest {
             when isActive is false and userId is null. (Expected 2)
             """)
     void findAllByUserIdAndActualReturnDateStatus_FinishedOnly_ReturnsTwoRentals() {
-        Page<Rental> result = rentalRepository.findAllByUserIdAndActualReturnDateStatus(
+        Page<Rental> result = rentalRepository.findAllByUserIdAndIsActive(
                 null,
                 false,
                 pageable
@@ -148,7 +148,7 @@ public class RentalRepositoryTest {
             for a specific user.
             """)
     void findAllByUserIdAndActualReturnDateStatus_User1ActiveOnly_ReturnsTwoRentals() {
-        Page<Rental> result = rentalRepository.findAllByUserIdAndActualReturnDateStatus(
+        Page<Rental> result = rentalRepository.findAllByUserIdAndIsActive(
                 user1.getId(),
                 true,
                 pageable
@@ -166,7 +166,7 @@ public class RentalRepositoryTest {
     @DisplayName("findAllByUserIdAndActualReturnDateStatus should return empty page when no "
             + "rentals match")
     void findAllByUserIdAndActualReturnDateStatus_NoMatches_ShouldReturnEmptyPage() {
-        Page<Rental> result = rentalRepository.findAllByUserIdAndActualReturnDateStatus(
+        Page<Rental> result = rentalRepository.findAllByUserIdAndIsActive(
                 999L, null, pageable);
 
         assertEquals(0, result.getTotalElements(), "Should return empty page");
