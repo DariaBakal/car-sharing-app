@@ -137,9 +137,9 @@ public class AuthenticationControllerTest {
     @WithAnonymousUser
     @Test
     @DisplayName("""
-            Verify login method with invalid password should return 401 Unauthorized
+            Verify login method with invalid password should return 403 Forbidden
             """)
-    public void login_WithInvalidPassword_ShouldReturn401() throws Exception {
+    public void login_WithInvalidPassword_ShouldReturn403() throws Exception {
         UserLoginRequestDto requestDto = new UserLoginRequestDto()
                 .setEmail("test@test.com")
                 .setPassword("wrongpassword");
@@ -147,15 +147,15 @@ public class AuthenticationControllerTest {
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @WithAnonymousUser
     @Test
     @DisplayName("""
-            Verify login method with non-existent user should return 401 Unauthorized
+            Verify login method with non-existent user should return 403 Forbidden
             """)
-    public void login_WithNonExistentUser_ShouldReturn401() throws Exception {
+    public void login_WithNonExistentUser_ShouldReturn403() throws Exception {
         UserLoginRequestDto requestDto = new UserLoginRequestDto()
                 .setEmail("nonexistent@user.com")
                 .setPassword("AnyPassword");
@@ -163,6 +163,6 @@ public class AuthenticationControllerTest {
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }

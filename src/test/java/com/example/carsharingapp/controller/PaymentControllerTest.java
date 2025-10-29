@@ -122,11 +122,11 @@ public class PaymentControllerTest {
     }
 
     @Test
-    @DisplayName("Verify getAllPayments when Anonymous user returns 401 Unauthorized")
+    @DisplayName("Verify getAllPayments when Anonymous user returns 403 Forbidden")
     @WithAnonymousUser
-    void getAllPayments_WithAnonymousUser_ShouldReturn401Unauthorized() throws Exception {
+    void getAllPayments_WithAnonymousUser_ShouldReturn403() throws Exception {
         mockMvc.perform(get(PAYMENT_ENDPOINT))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -166,11 +166,11 @@ public class PaymentControllerTest {
     }
 
     @Test
-    @DisplayName("Verify getPaymentById when Anonymous user returns 401 Unauthorized")
+    @DisplayName("Verify getPaymentById when Anonymous user returns 403 Forbidden")
     @WithAnonymousUser
-    void getPaymentById_WithAnonymousUser_ShouldReturn401Unauthorized() throws Exception {
+    void getPaymentById_WithAnonymousUser_ShouldReturn403() throws Exception {
         mockMvc.perform(get(PAYMENT_ENDPOINT + "/{id}", CUSTOMER_PAYMENT_ID))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -340,11 +340,11 @@ public class PaymentControllerTest {
     }
 
     @Test
-    @DisplayName("Verify renewPaymentSession when Anonymous user returns 401 Unauthorized")
+    @DisplayName("Verify renewPaymentSession when Anonymous user returns 403 Forbidden")
     @WithAnonymousUser
-    void renewPaymentSession_WithAnonymousUser_ShouldReturn401Unauthorized() throws Exception {
+    void renewPaymentSession_WithAnonymousUser_ShouldReturn403() throws Exception {
         mockMvc.perform(post(PAYMENT_ENDPOINT + "/renew/{paymentId}", CUSTOMER_PAYMENT_ID)
                         .with(csrf()))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }

@@ -147,13 +147,13 @@ public class PaymentServiceTest {
         List<Payment> userPayments = List.of(pendingPayment);
         Page<Payment> page = new PageImpl<>(userPayments, PAGEABLE, 1);
 
-        when(paymentRepository.findAllByUserId(eq(testUser.getId()), eq(PAGEABLE))).thenReturn(
-                page);
+        when(paymentRepository.findAllByRentalUserId(
+                eq(testUser.getId()), eq(PAGEABLE))).thenReturn(page);
         paymentService.findAll(targetUserId, PAGEABLE, authentication);
 
-        verify(paymentRepository, times(1)).findAllByUserId(eq(
+        verify(paymentRepository, times(1)).findAllByRentalUserId(eq(
                 testUser.getId()), eq(PAGEABLE));
-        verify(paymentRepository, never()).findAllByUserId(eq(targetUserId), eq(PAGEABLE));
+        verify(paymentRepository, never()).findAllByRentalUserId(eq(targetUserId), eq(PAGEABLE));
     }
 
     @Test
@@ -165,12 +165,12 @@ public class PaymentServiceTest {
         List<Payment> userPayments = List.of(pendingPayment);
         Page<Payment> page = new PageImpl<>(userPayments, PAGEABLE, 1);
 
-        when(paymentRepository.findAllByUserId(eq(targetUserId), eq(PAGEABLE)))
+        when(paymentRepository.findAllByRentalUserId(eq(targetUserId), eq(PAGEABLE)))
                 .thenReturn(page);
 
         paymentService.findAll(targetUserId, PAGEABLE, authentication);
 
-        verify(paymentRepository, times(1)).findAllByUserId(
+        verify(paymentRepository, times(1)).findAllByRentalUserId(
                 eq(targetUserId), eq(PAGEABLE));
     }
 

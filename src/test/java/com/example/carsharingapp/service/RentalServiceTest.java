@@ -242,7 +242,7 @@ public class RentalServiceTest {
         List<Rental> rentalList = List.of(testRental);
         Page<Rental> mockRentalPage = new PageImpl<>(rentalList, pageable, 1);
 
-        when(rentalRepository.findAllByUserIdAndActualReturnDateStatus(
+        when(rentalRepository.findAllByUserIdAndIsActive(
                 eq(targetUserId),
                 eq(isActive),
                 eq(pageable)
@@ -257,7 +257,7 @@ public class RentalServiceTest {
         assertEquals(testRentalDto, actualRentalDtoPage.getContent().get(0));
 
         verify(rentalRepository, times(1))
-                .findAllByUserIdAndActualReturnDateStatus(
+                .findAllByUserIdAndIsActive(
                         eq(targetUserId),
                         eq(isActive),
                         eq(pageable)
@@ -274,7 +274,7 @@ public class RentalServiceTest {
         List<Rental> rentalList = List.of(testRental);
         Page<Rental> mockRentalPage = new PageImpl<>(rentalList, pageable, 1);
 
-        when(rentalRepository.findAllByUserIdAndActualReturnDateStatus(
+        when(rentalRepository.findAllByUserIdAndIsActive(
                 isNull(),
                 eq(isActive),
                 eq(pageable)
@@ -289,7 +289,7 @@ public class RentalServiceTest {
         assertEquals(testRentalDto, actualRentalDtoPage.getContent().get(0));
 
         verify(rentalRepository, times(1))
-                .findAllByUserIdAndActualReturnDateStatus(
+                .findAllByUserIdAndIsActive(
                         isNull(),
                         eq(isActive),
                         eq(pageable)

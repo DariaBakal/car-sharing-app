@@ -130,8 +130,8 @@ public class CarControllerTest {
 
     @WithAnonymousUser
     @Test
-    @DisplayName("Verify addCar when Anonymous user returns 401 Unauthorized")
-    void addCar_WithAnonymousUser_ShouldReturn401() throws Exception {
+    @DisplayName("Verify addCar when Anonymous user returns 403 Forbidden")
+    void addCar_WithAnonymousUser_ShouldReturn403() throws Exception {
         AddCarRequestDto requestDto = new AddCarRequestDto()
                 .setBrand("Lada")
                 .setModel("Niva")
@@ -142,7 +142,7 @@ public class CarControllerTest {
         mockMvc.perform(post("/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @WithMockUser(username = CUSTOMER_EMAIL, roles = {"CUSTOMER"})
@@ -159,11 +159,11 @@ public class CarControllerTest {
 
     @WithAnonymousUser
     @Test
-    @DisplayName("Verify getAllCars when Anonymous user returns 401 Unauthorized")
+    @DisplayName("Verify getAllCars when Anonymous user returns 403 Forbidden")
     void getAllCars_WithAnonymousUser_ShouldReturn401() throws Exception {
         mockMvc.perform(get("/cars")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @WithMockUser(username = MANAGER_EMAIL, roles = {"MANAGER"})
@@ -180,11 +180,11 @@ public class CarControllerTest {
 
     @WithAnonymousUser
     @Test
-    @DisplayName("Verify getCarById when Anonymous returns 401 Unauthorized")
-    void getCarById_WithAnonymousUser_ShouldReturn401() throws Exception {
+    @DisplayName("Verify getCarById when Anonymous returns 403 Forbidden")
+    void getCarById_WithAnonymousUser_ShouldReturn403() throws Exception {
         mockMvc.perform(get("/cars/{id}", TEST_CAR_ID)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @WithMockUser(username = MANAGER_EMAIL, roles = {"MANAGER"})
@@ -246,10 +246,10 @@ public class CarControllerTest {
 
     @WithAnonymousUser
     @Test
-    @DisplayName("Verify deleteCar when Anonymous returns 401 Unauthorized")
-    void deleteCar_WithAnonymousUser_ShouldReturn401() throws Exception {
+    @DisplayName("Verify deleteCar when Anonymous returns 403 Forbidden")
+    void deleteCar_WithAnonymousUser_ShouldReturn403() throws Exception {
         mockMvc.perform(delete("/cars/{id}", TEST_CAR_ID)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }
